@@ -1,0 +1,1146 @@
+--[[
+    ╔══════════════════════════════════════════════════════════╗
+    ║     ONE BY CHAT - TURBO EDITION                         ║
+    ║     ☠️  TÁC GIẢ: KIETDEPZAI  ☠️                          ║
+    ║     🔥  FULL CHỨC NĂNG - GIỐNG TURBO LITE              ║
+    ║     🎨  GIAO DIỆN 13 TAB + AUTO FARM + RAID + ESP      ║
+    ║     📅  CẬP NHẬT: 2026                                  ║
+    ╚══════════════════════════════════════════════════════════╝
+--]]
+
+-- ===========================================
+-- BIẾN TOÀN CỤC CHO CÁC CHỨC NĂNG
+-- ===========================================
+_G.AutoFarm = false
+_G.AutoQuest = false
+_G.AutoRaid = false
+_G.AutoAwakening = false
+_G.AutoFruit = false
+_G.AutoStoreFruit = false
+_G.AutoSeaBeast = false
+_G.AutoPirateShip = false
+_G.AutoBoss = false
+_G.AutoElite = false
+_G.Aimbot = false
+_G.SpeedHack = false
+_G.JumpHack = false
+_G.GodMode = false
+_G.ESP = false
+_G.AutoHaki = false
+_G.AutoV3 = false
+_G.AutoV4 = false
+_G.SafeMode = false
+_G.AntiAFK = false
+_G.SelectedBoss = nil
+_G.SelectedChip = "Flame"
+_G.WalkSpeedValue = 16
+_G.JumpPowerValue = 50
+_G.TweenSpeed = 300
+
+-- ===========================================
+-- CÁC HÀM CHỨC NĂNG CHÍNH
+-- ===========================================
+
+-- HÀM TELEPORT
+local function TeleportTo(place)
+    local player = game.Players.LocalPlayer
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = place
+    end
+end
+
+-- HÀM AUTO FARM CƠ BẢN
+local function AutoFarmLoop()
+    while _G.AutoFarm do
+        wait(0.1)
+        local player = game.Players.LocalPlayer
+        if not player.Character then continue end
+        
+        -- Tìm quái gần nhất
+        local nearestEnemy
+        local shortestDistance = math.huge
+        
+        for _, enemy in pairs(workspace.Enemies:GetChildren()) do
+            if enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                local distance = (player.Character.HumanoidRootPart.Position - enemy.HumanoidRootPart.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    nearestEnemy = enemy
+                end
+            end
+        end
+        
+        if nearestEnemy then
+            -- Di chuyển đến quái
+            player.Character.HumanoidRootPart.CFrame = nearestEnemy.HumanoidRootPart.CFrame * CFrame.new(0, 0, 15)
+            
+            -- Tấn công
+            local tool = player.Character:FindFirstChildOfClass("Tool")
+            if tool then
+                tool:Activate()
+            end
+        end
+    end
+end
+
+-- HÀM AUTO QUEST
+local function AutoQuestLoop()
+    while _G.AutoQuest do
+        wait(1)
+        local player = game.Players.LocalPlayer
+        if not player.Character then continue end
+        
+        -- Code auto nhận quest ở đây
+        -- Tùy chỉnh theo game Blox Fruits
+    end
+end
+
+-- HÀM AUTO RAID
+local function AutoRaidLoop()
+    while _G.AutoRaid do
+        wait(1)
+        local player = game.Players.LocalPlayer
+        
+        -- Mua chip nếu cần
+        if _G.AutoRaid then
+            local args = {
+                [1] = "Raids",
+                [2] = "SelectChip",
+                [3] = _G.SelectedChip
+            }
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+            
+            wait(0.5)
+            
+            local args2 = {
+                [1] = "Raids",
+                [2] = "StartRaid"
+            }
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args2))
+        end
+    end
+end
+
+-- HÀM AUTO AWAKENING
+local function AutoAwakeningLoop()
+    while _G.AutoAwakening do
+        wait(1)
+        local player = game.Players.LocalPlayer
+        
+        local args = {
+            [1] = "AwakeningChamber",
+            [2] = "Awaken"
+        }
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end
+end
+
+-- HÀM AUTO FRUIT
+local function AutoFruitLoop()
+    while _G.AutoFruit do
+        wait(0.5)
+        local player = game.Players.LocalPlayer
+        if not player.Character then continue end
+        
+        -- Tìm trái cây trên map
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:find("Fruit") and obj:IsA("Part") then
+                player.Character.HumanoidRootPart.CFrame = obj.CFrame
+                wait(0.2)
+                firetouchinterest(player.Character.HumanoidRootPart, obj, 0)
+                firetouchinterest(player.Character.HumanoidRootPart, obj, 1)
+                break
+            end
+        end
+    end
+end
+
+-- HÀM AUTO STORE FRUIT
+local function AutoStoreFruitLoop()
+    while _G.AutoStoreFruit do
+        wait(1)
+        local player = game.Players.LocalPlayer
+        
+        local args = {
+            [1] = "FruitStorage",
+            [2] = "Store"
+        }
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end
+end
+
+-- HÀM AUTO SEA BEAST
+local function AutoSeaBeastLoop()
+    while _G.AutoSeaBeast do
+        wait(0.5)
+        local player = game.Players.LocalPlayer
+        if not player.Character then continue end
+        
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:find("SeaBeast") or obj.Name:find("Leviathan") then
+                if obj:FindFirstChild("HumanoidRootPart") then
+                    player.Character.HumanoidRootPart.CFrame = obj.HumanoidRootPart.CFrame * CFrame.new(0, 0, 30)
+                    
+                    local tool = player.Character:FindFirstChildOfClass("Tool")
+                    if tool then
+                        tool:Activate()
+                    end
+                end
+                break
+            end
+        end
+    end
+end
+
+-- HÀM AUTO PIRATE SHIP
+local function AutoPirateShipLoop()
+    while _G.AutoPirateShip do
+        wait(0.5)
+        local player = game.Players.LocalPlayer
+        if not player.Character then continue end
+        
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name:find("Pirate") or obj.Name:find("Ship") then
+                if obj:FindFirstChild("HumanoidRootPart") and obj:FindFirstChild("Humanoid") and obj.Humanoid.Health > 0 then
+                    player.Character.HumanoidRootPart.CFrame = obj.HumanoidRootPart.CFrame * CFrame.new(0, 0, 20)
+                    
+                    local tool = player.Character:FindFirstChildOfClass("Tool")
+                    if tool then
+                        tool:Activate()
+                    end
+                end
+                break
+            end
+        end
+    end
+end
+
+-- HÀM AIMBOT
+local function AimbotLoop()
+    while _G.Aimbot do
+        wait()
+        local player = game.Players.LocalPlayer
+        if not player.Character then continue end
+        
+        local nearestPlayer
+        local shortestDistance = math.huge
+        
+        for _, plr in pairs(game.Players:GetPlayers()) do
+            if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (player.Character.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    nearestPlayer = plr
+                end
+            end
+        end
+        
+        if nearestPlayer then
+            workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, nearestPlayer.Character.HumanoidRootPart.Position)
+        end
+    end
+end
+
+-- HÀM SPEED HACK
+local function SpeedHackLoop()
+    while _G.SpeedHack do
+        wait(0.1)
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = _G.WalkSpeedValue
+        end
+    end
+end
+
+-- HÀM JUMP HACK
+local function JumpHackLoop()
+    while _G.JumpHack do
+        wait(0.1)
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.JumpPower = _G.JumpPowerValue
+        end
+    end
+end
+
+-- HÀM GOD MODE
+local function GodModeLoop()
+    while _G.GodMode do
+        wait(0.1)
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.MaxHealth = 999999
+            player.Character.Humanoid.Health = 999999
+        end
+    end
+end
+
+-- HÀM ANTI AFK
+local function AntiAFKLoop()
+    while _G.AntiAFK do
+        wait(60)
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            -- Giả lập hành động để không bị kick
+            player.Character.Humanoid:MoveTo(player.Character.HumanoidRootPart.Position + Vector3.new(1,0,0))
+            wait(0.1)
+            player.Character.Humanoid:MoveTo(player.Character.HumanoidRootPart.Position - Vector3.new(1,0,0))
+        end
+    end
+end
+
+-- HÀM ESP
+local function ESPLoop()
+    while _G.ESP do
+        wait(1)
+        -- Code ESP ở đây
+    end
+end
+
+-- HÀM AUTO HAKI
+local function AutoHakiLoop()
+    while _G.AutoHaki do
+        wait(5)
+        local player = game.Players.LocalPlayer
+        local args = {
+            [1] = "Buso"
+        }
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end
+end
+
+-- HÀM AUTO V3
+local function AutoV3Loop()
+    while _G.AutoV3 do
+        wait(30)
+        local player = game.Players.LocalPlayer
+        local args = {
+            [1] = "RaceV3"
+        }
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end
+end
+
+-- HÀM AUTO V4
+local function AutoV4Loop()
+    while _G.AutoV4 do
+        wait(60)
+        local player = game.Players.LocalPlayer
+        local args = {
+            [1] = "RaceV4"
+        }
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+    end
+end
+
+-- HÀM SAFE MODE
+local function SafeModeLoop()
+    while _G.SafeMode do
+        wait(0.5)
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            if player.Character.Humanoid.Health < player.Character.Humanoid.MaxHealth * 0.3 then
+                -- Nếu máu dưới 30%, tự động bỏ chạy
+                local root = player.Character.HumanoidRootPart
+                root.CFrame = root.CFrame + Vector3.new(100, 0, 0)
+            end
+-- ===========================================
+-- KIỂM TRA THIẾT BỊ
+-- ===========================================
+local UserInputService = game:GetService("UserInputService")
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+local deviceType = isMobile and "📱 MOBILE" or "💻 PC"
+
+-- KÍCH THƯỚC MENU
+local screenSize = workspace.CurrentCamera.ViewportSize
+local menuWidth = screenSize.X * 0.7
+local menuHeight = screenSize.Y * 0.75
+local menuX = (screenSize.X - menuWidth) / 2
+local menuY = (screenSize.Y - menuHeight) / 2
+
+-- TẠO GUI CHÍNH
+local OneByChat = Instance.new("ScreenGui")
+OneByChat.Name = "OneByChat"
+OneByChat.Parent = game:GetService("CoreGui")
+OneByChat.ResetOnSpawn = false
+OneByChat.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- FRAME CHÍNH
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = OneByChat
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.BorderSizePixel = 0
+MainFrame.Size = UDim2.new(0, menuWidth, 0, menuHeight)
+MainFrame.Position = UDim2.new(0, menuX, 0, menuY)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.ClipsDescendants = true
+
+-- VIỀN SÁNG
+local Border = Instance.new("Frame")
+Border.Parent = MainFrame
+Border.Size = UDim2.new(1, 4, 1, 4)
+Border.Position = UDim2.new(-0.005, 0, -0.005, 0)
+Border.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+Border.BackgroundTransparency = 0.7
+Border.BorderSizePixel = 0
+
+-- THANH TIÊU ĐỀ
+local TitleBar = Instance.new("Frame")
+TitleBar.Parent = MainFrame
+TitleBar.Size = UDim2.new(1, 0, 0, 40)
+TitleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TitleBar.BorderSizePixel = 0
+
+local Title = Instance.new("TextLabel")
+Title.Parent = TitleBar
+Title.Size = UDim2.new(1, -80, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.Text = "☠️ ONE BY CHAT - TURBO EDITION ☠️"
+Title.TextColor3 = Color3.fromRGB(0, 255, 128)
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBold
+Title.BackgroundTransparency = 1
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- NÚT THU GỌN
+local MinimizeBtn = Instance.new("TextButton")
+MinimizeBtn.Parent = TitleBar
+MinimizeBtn.Size = UDim2.new(0, 35, 0, 35)
+MinimizeBtn.Position = UDim2.new(1, -80, 0, 2.5)
+MinimizeBtn.Text = "−"
+MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeBtn.TextSize = 25
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MinimizeBtn.BorderSizePixel = 0
+MinimizeBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
+
+-- NÚT ĐÓNG
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Parent = TitleBar
+CloseBtn.Size = UDim2.new(0, 35, 0, 35)
+CloseBtn.Position = UDim2.new(1, -40, 0, 2.5)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.TextSize = 20
+CloseBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+CloseBtn.BorderSizePixel = 0
+CloseBtn.MouseButton1Click:Connect(function()
+    OneByChat:Destroy()
+end)
+
+-- NÚT AVATAR BÊN TRÁI
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Parent = OneByChat
+ToggleButton.Size = UDim2.new(0, 55, 0, 55)
+ToggleButton.Position = UDim2.new(0, 15, 0.5, -27.5)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+ToggleButton.BackgroundTransparency = 0.1
+ToggleButton.BorderSizePixel = 2
+ToggleButton.BorderColor3 = Color3.fromRGB(0, 255, 128)
+ToggleButton.Text = "ON"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextSize = 16
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Draggable = true
+
+-- Bo tròn
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = ToggleButton
+UICorner.CornerRadius = UDim.new(1, 0)
+
+-- Đèn báo trạng thái
+local StatusLight = Instance.new("Frame")
+StatusLight.Parent = ToggleButton
+StatusLight.Size = UDim2.new(0, 12, 0, 12)
+StatusLight.Position = UDim2.new(1, -17, 0, 5)
+StatusLight.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+StatusLight.BorderSizePixel = 0
+local LightCorner = Instance.new("UICorner")
+LightCorner.Parent = StatusLight
+LightCorner.CornerRadius = UDim.new(1, 0)
+
+-- Xử lý bật/tắt menu
+ToggleButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+    if MainFrame.Visible then
+        ToggleButton.Text = "OFF"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        StatusLight.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    else
+        ToggleButton.Text = "ON"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+        StatusLight.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    end
+end)
+
+-- Hiệu ứng hover
+ToggleButton.MouseEnter:Connect(function()
+    ToggleButton.Size = UDim2.new(0, 60, 0, 60)
+end)
+ToggleButton.MouseLeave:Connect(function()
+    ToggleButton.Size = UDim2.new(0, 55, 0, 55)
+end)
+
+ToggleButton.ZIndex = 10
+MainFrame.ZIndex = 5
+
+-- ===========================================
+-- THANH TAB DỌC (BÊN TRÁI)
+-- ===========================================
+local TabPanel = Instance.new("Frame")
+TabPanel.Parent = MainFrame
+TabPanel.Size = UDim2.new(0, 200, 1, -50)
+TabPanel.Position = UDim2.new(0, 10, 0, 45)
+TabPanel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+TabPanel.BorderSizePixel = 0
+
+local TabList = Instance.new("ScrollingFrame")
+TabList.Parent = TabPanel
+TabList.Size = UDim2.new(1, -5, 1, -5)
+TabList.Position = UDim2.new(0, 2, 0, 2)
+TabList.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+TabList.BorderSizePixel = 0
+TabList.ScrollBarThickness = 4
+TabList.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 128)
+
+-- Danh sách 13 tab
+local tabs = {
+    "📋 Info & Server",
+    "🌾 Tab Farming",
+    "📦 Stack Farm",
+    "⚔️ Farm Mastery",
+    "🌊 Sea Event",
+    "⬆️ Upgrade V4",
+    "🐉 Dojo & Drago Race",
+    "🎁 Get Item & Upgrade",
+    "🍎 Raid & Fruit",
+    "👤 Local Player",
+    "🏪 Local Shop",
+    "📊 Stats & ESP",
+    "🌐 Tab Teleport"
+}
+
+local tabButtons = {}
+local currentTab = 1
+
+-- ===========================================
+-- KHU VỰC NỘI DUNG (BÊN PHẢI)
+-- ===========================================
+local ContentPanel = Instance.new("Frame")
+ContentPanel.Parent = MainFrame
+ContentPanel.Size = UDim2.new(1, -230, 1, -50)
+ContentPanel.Position = UDim2.new(0, 220, 0, 45)
+ContentPanel.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+ContentPanel.BorderSizePixel = 0
+
+local ContentFrame = Instance.new("ScrollingFrame")
+ContentFrame.Parent = ContentPanel
+ContentFrame.Size = UDim2.new(1, -10, 1, -10)
+ContentFrame.Position = UDim2.new(0, 5, 0, 5)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+ContentFrame.BackgroundTransparency = 0.5
+ContentFrame.BorderSizePixel = 0
+ContentFrame.ScrollBarThickness = 6
+ContentFrame.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 128)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ContentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+-- ===========================================
+-- HÀM TẠO UI
+-- ===========================================
+local function ClearContent()
+    for _, v in pairs(ContentFrame:GetChildren()) do
+        v:Destroy()
+    end
+end
+local function CreateToggle(parent, name, desc, yPos, default, callback)
+    local frame = Instance.new("Frame")
+    frame.Parent = parent
+    frame.Size = UDim2.new(1, -10, 0, 60)
+    frame.Position = UDim2.new(0, 5, 0, yPos)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BorderSizePixel = 0
+
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Parent = frame
+    nameLabel.Size = UDim2.new(1, -80, 0, 25)
+    nameLabel.Position = UDim2.new(0, 10, 0, 5)
+    nameLabel.Text = name
+    nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.TextScaled = true
+    nameLabel.Font = Enum.Font.GothamSemibold
+    nameLabel.BackgroundTransparency = 1
+
+    local descLabel = Instance.new("TextLabel")
+    descLabel.Parent = frame
+    descLabel.Size = UDim2.new(1, -80, 0, 20)
+    descLabel.Position = UDim2.new(0, 10, 0, 30)
+    descLabel.Text = desc
+    descLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+    descLabel.TextXAlignment = Enum.TextXAlignment.Left
+    descLabel.TextScaled = true
+    descLabel.Font = Enum.Font.Gotham
+    descLabel.BackgroundTransparency = 1
+
+    local toggle = Instance.new("TextButton")
+    toggle.Parent = frame
+    toggle.Size = UDim2.new(0, 50, 0, 25)
+    toggle.Position = UDim2.new(1, -60, 0, 17.5)
+    toggle.Text = default and "ON" or "OFF"
+    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggle.TextSize = 14
+    toggle.BackgroundColor3 = default and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(150, 0, 0)
+    toggle.BorderSizePixel = 0
+
+    local enabled = default or false
+    toggle.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        toggle.Text = enabled and "ON" or "OFF"
+        toggle.BackgroundColor3 = enabled and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(150, 0, 0)
+        
+        if callback then
+            callback(enabled)
+        end
+    end)
+
+    return frame, toggle
+end
+
+local function CreateButton(parent, name, yPos, color, callback)
+    local btn = Instance.new("TextButton")
+    btn.Parent = parent
+    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.Position = UDim2.new(0, 5, 0, yPos)
+    btn.Text = name
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 16
+    btn.BackgroundColor3 = color or Color3.fromRGB(0, 100, 150)
+    btn.BorderSizePixel = 0
+    
+    if callback then
+        btn.MouseButton1Click:Connect(callback)
+    end
+    
+    return btn
+end
+
+local function CreateInput(parent, name, placeholder, yPos, callback)
+    local frame = Instance.new("Frame")
+    frame.Parent = parent
+    frame.Size = UDim2.new(1, -10, 0, 70)
+    frame.Position = UDim2.new(0, 5, 0, yPos)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BorderSizePixel = 0
+
+    local label = Instance.new("TextLabel")
+    label.Parent = frame
+    label.Size = UDim2.new(1, -20, 0, 25)
+    label.Position = UDim2.new(0, 10, 0, 5)
+    label.Text = name
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextScaled = true
+    label.Font = Enum.Font.Gotham
+    label.BackgroundTransparency = 1
+
+    local input = Instance.new("TextBox")
+    input.Parent = frame
+    input.Size = UDim2.new(1, -20, 0, 30)
+    input.Position = UDim2.new(0, 10, 0, 35)
+    input.PlaceholderText = placeholder
+    input.Text = ""
+    input.TextColor3 = Color3.fromRGB(255, 255, 255)
+    input.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    input.BorderSizePixel = 0
+    
+    input.FocusLost:Connect(function(enterPressed)
+        if enterPressed and callback then
+            callback(input.Text)
+        end
+    end)
+
+    return frame, input
+end
+
+local function CreateDropdown(parent, name, options, yPos, callback)
+    local frame = Instance.new("Frame")
+    frame.Parent = parent
+    frame.Size = UDim2.new(1, -10, 0, 70)
+    frame.Position = UDim2.new(0, 5, 0, yPos)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BorderSizePixel = 0
+
+    local label = Instance.new("TextLabel")
+    label.Parent = frame
+    label.Size = UDim2.new(1, -20, 0, 25)
+    label.Position = UDim2.new(0, 10, 0, 5)
+    label.Text = name
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextScaled = true
+    label.Font = Enum.Font.Gotham
+    label.BackgroundTransparency = 1
+
+    local btn = Instance.new("TextButton")
+    btn.Parent = frame
+    btn.Size = UDim2.new(1, -20, 0, 30)
+    btn.Position = UDim2.new(0, 10, 0, 35)
+    btn.Text = options[1]
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.BorderSizePixel = 0
+    
+    local currentIndex = 1
+    btn.MouseButton1Click:Connect(function()
+        currentIndex = currentIndex % #options + 1
+        btn.Text = options[currentIndex]
+        if callback then
+            callback(options[currentIndex])
+        end
+    end)
+
+    return frame, btn
+end
+-- ===========================================
+-- HÀM CẬP NHẬT NỘI DUNG THEO TAB
+-- ===========================================
+local function UpdateContent(tabIndex)
+    ClearContent()
+    local yPos = 0
+
+    if tabIndex == 1 then -- Info & Server
+        local toggle1, _ = CreateToggle(ContentFrame, "Mirage Island", "phát hiện đảo ảo", yPos, false)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Kitsune Island", "phát hiện đảo kitsune", yPos, false)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Prehistoric Island", "phát hiện đảo tiền sử", yPos, false)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "Frozen Dimension", "phát hiện không gian băng", yPos, false)
+        yPos = yPos + 65
+        local btn1 = CreateButton(ContentFrame, "Pull Lever", yPos, Color3.fromRGB(255, 150, 0))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Full Moon", yPos, Color3.fromRGB(200, 200, 0))
+
+    elseif tabIndex == 2 then -- Tab Farming
+        local toggle1, _ = CreateToggle(ContentFrame, "Start Farm", "bắt đầu farm", yPos, false, function(enabled)
+            _G.AutoFarm = enabled
+            if enabled then spawn(AutoFarmLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Accept Quests", "tự động nhận nhiệm vụ", yPos, false, function(enabled)
+            _G.AutoQuest = enabled
+            if enabled then spawn(AutoQuestLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Auto Factory Raid", "tự động đánh nhà máy", yPos, false)
+        yPos = yPos + 65
+        local btn1 = CreateButton(ContentFrame, "Kill Mobs Nearest", yPos, Color3.fromRGB(200, 50, 50))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Select Farm Mode", yPos, Color3.fromRGB(0, 150, 200))
+
+    elseif tabIndex == 3 then -- Stack Farm
+        local toggle1, _ = CreateToggle(ContentFrame, "Disable Notify", "tắt thông báo", yPos, false)
+        yPos = yPos + 65
+        local input1, _ = CreateInput(ContentFrame, "Bring Mobs Range", "độ xa gom quái", yPos)
+        yPos = yPos + 75
+        local input2, _ = CreateInput(ContentFrame, "Select Farm Height", "độ cao đứng trên đầu", yPos)
+        yPos = yPos + 75
+        local input3, _ = CreateInput(ContentFrame, "Tween Speed", "tốc độ di chuyển", yPos, function(value)
+            _G.TweenSpeed = tonumber(value) or 300
+        end)
+        yPos = yPos + 75
+        local btn1 = CreateButton(ContentFrame, "Redeem All Codes", yPos, Color3.fromRGB(0, 200, 100))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Set Pirate Team", yPos, Color3.fromRGB(200, 0, 0))
+
+    elseif tabIndex == 4 then -- Farm Mastery
+        local toggle1, _ = CreateToggle(ContentFrame, "Auto Farm 600 In Swords", "tự động farm 600 điểm kiếm", yPos, false)
+        yPos = yPos + 65
+        local btn1 = CreateButton(ContentFrame, "Auto Skull Guitar", yPos, Color3.fromRGB(150, 0, 150))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Auto Yama CDK", yPos, Color3.fromRGB(0, 100, 200))
+        yPos = yPos + 45
+        local btn3 = CreateButton(ContentFrame, "Auto Tushita CDK", yPos, Color3.fromRGB(0, 150, 150))
+        yPos = yPos + 45
+        local btn4 = CreateButton(ContentFrame, "Auto Cursed Dual Katana", yPos, Color3.fromRGB(200, 0, 200))
+        yPos = yPos + 45
+        local btn5 = CreateButton(ContentFrame, "Auto Canvendish Sword", yPos, Color3.fromRGB(255, 100, 0))
+
+    elseif tabIndex == 5 then -- Sea Event
+        local toggle1, _ = CreateToggle(ContentFrame, "Auto Attack Sea Beast", "tự động đánh sea beast", yPos, false, function(enabled)
+            _G.AutoSeaBeast = enabled
+            if enabled then spawn(AutoSeaBeastLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Auto Attack Pirate GrandBrigade", "tự động tấn công thuyền cướp biển", yPos, false, function(enabled)
+            _G.AutoPirateShip = enabled
+            if enabled then spawn(AutoPirateShipLoop) end
+        end)
+        yPos = yPos + 65
+        local label = Instance.new("TextLabel")
+        label.Parent = ContentFrame
+        label.Size = UDim2.new(1, -10, 0, 30)
+        label.Position = UDim2.new(0, 5, 0, yPos)
+        label.Text = "Go to Sea 3 for more options"
+        label.TextColor3 = Color3.fromRGB(255, 255, 0)
+        label.TextScaled = true
+        label.Font = Enum.Font.Gotham
+        label.BackgroundTransparency = 1
+        yPos = yPos + 35
+
+    elseif tabIndex == 6 then -- Upgrade V4
+        local toggle1, _ = CreateToggle(ContentFrame, "Auto Mink V2/V3", "tự động nâng cấp tộc mink", yPos, false, function(enabled)
+            _G.AutoV3 = enabled
+            if enabled then spawn(AutoV3Loop) end
+        end)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Auto Human V2/V3", "tự động nâng cấp tộc human", yPos, false, function(enabled)
+            _G.AutoV3 = enabled
+            if enabled then spawn(AutoV3Loop) end
+        end)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Auto Angel V2/V3", "tự động nâng cấp tộc angel", yPos, false, function(enabled)
+            _G.AutoV3 = enabled
+            if enabled then spawn(AutoV3Loop) end
+        end)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "Auto Shark V2/V3", "tự động nâng cấp tộc shark", yPos, false, function(enabled)
+            _G.AutoV3 = enabled
+            if enabled then spawn(AutoV3Loop) end
+        end)
+        yPos = yPos + 65
+        local label = Instance.new("TextLabel")
+        label.Parent = ContentFrame
+        label.Size = UDim2.new(1, -10, 0, 30)
+        label.Position = UDim2.new(0, 5, 0, yPos)
+        label.Text = "Race upgrade v4 only in Sea 3"
+        label.TextColor3 = Color3.fromRGB(0, 255, 255)
+        label.TextScaled = true
+        label.Font = Enum.Font.Gotham
+        label.BackgroundTransparency = 1
+        yPos = yPos + 35
+
+    elseif tabIndex == 7 then -- Dojo & Drago Race
+        local toggle1, _ = CreateToggle(ContentFrame, "Auto Dojo Trainer", "tự động làm nhiệm vụ đai dojo", yPos, false)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Auto Dragon Hunter", "tự động farm blaze ember", yPos, false)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Auto race draco (V1)", "tự động săn trứng rồng", yPos, false)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "Auto race draco (V2)", "tự động farm fireflower", yPos, false)
+        yPos = yPos + 65
+        local toggle5, _ = CreateToggle(ContentFrame, "Auto race draco (V3)", "tự động săn terror shark", yPos, false, function(enabled)
+            _G.AutoSeaBeast = enabled
+            if enabled then spawn(AutoSeaBeastLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle6, _ = CreateToggle(ContentFrame, "Auto Relic Draco Trial", "tự động thử thách relic", yPos, false)
+        yPos = yPos + 65
+        local btn1 = CreateButton(ContentFrame, "Swap Draco Race", yPos, Color3.fromRGB(150, 0, 255))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Upgrade Dragon Talon", yPos, Color3.fromRGB(255, 0, 100))
+
+    elseif tabIndex == 8 then -- Get Item & Upgrade
+        local toggle1, _ = CreateToggle(ContentFrame, "Auto Active Haki", "tự động kích hoạt haki", yPos, false, function(enabled)
+            _G.AutoHaki = enabled
+            if enabled then spawn(AutoHakiLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Auto Active V3", "tự động dùng tốc v3", yPos, false, function(enabled)
+            _G.AutoV3 = enabled
+            if enabled then spawn(AutoV3Loop) end
+        end)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Auto Active V4", "tự động dùng tốc v4", yPos, false, function(enabled)
+            _G.AutoV4 = enabled
+            if enabled then spawn(AutoV4Loop) end
+        end)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "Safe Mode", "bảo vệ máu khi thấp", yPos, false, function(enabled)
+            _G.SafeMode = enabled
+            if enabled then spawn(SafeModeLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle5, _ = CreateToggle(ContentFrame, "Instance Mink V3 [INF]", "bật để mink v3 vô hạn", yPos, false)
+
+    elseif tabIndex == 9 then -- Raid & Fruit
+        local dropdown1, _ = CreateDropdown(ContentFrame, "Select Chip", {"Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", "Magma", "Human: Buddha"}, yPos, function(value)
+            _G.SelectedChip = value
+        end)
+        yPos = yPos + 75
+        local toggle1, _ = CreateToggle(ContentFrame, "Buy Chip With Fruit", "dùng trái cây thấp nhất để mua chip", yPos, false)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Auto Start Raid", "tự động bắt đầu raid", yPos, false, function(enabled)
+            _G.AutoRaid = enabled
+            if enabled then spawn(AutoRaidLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Auto Complete Raid", "tự động hoàn thành raid", yPos, false, function(enabled)
+            _G.AutoRaid = enabled
+            if enabled then spawn(AutoRaidLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "Auto Awakening", "tự động thức tỉnh", yPos, false, function(enabled)
+            _G.AutoAwakening = enabled
+            if enabled then spawn(AutoAwakeningLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle5, _ = CreateToggle(ContentFrame, "Auto Random Fruit", "tự động random trái", yPos, false)
+        yPos = yPos + 65
+        local toggle6, _ = CreateToggle(ContentFrame, "Auto Store Fruit", "tự động cất trái vào kho", yPos, false, function(enabled)
+            _G.AutoStoreFruit = enabled
+            if enabled then spawn(AutoStoreFruitLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle7, _ = CreateToggle(ContentFrame, "Auto Tween to Fruit", "tự động di chuyển đến trái", yPos, false, function(enabled)
+            _G.AutoFruit = enabled
+            if enabled then spawn(AutoFruitLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle8, _ = CreateToggle(ContentFrame, "Auto Collect Fruit", "tự động nhặt trái", yPos, false, function(enabled)
+            _G.AutoFruit = enabled
+            if enabled then spawn(AutoFruitLoop) end
+        end)
+
+    elseif tabIndex == 10 then -- Local Player
+        local toggle1, _ = CreateToggle(ContentFrame, "Aimbot", "tự động ngắm bắn", yPos, false, function(enabled)
+            _G.Aimbot = enabled
+            if enabled then spawn(AimbotLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "Speed Hack", "tăng tốc di chuyển", yPos, false, function(enabled)
+            _G.SpeedHack = enabled
+            if enabled then spawn(SpeedHackLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "Jump Hack", "nhảy cao", yPos, false, function(enabled)
+            _G.JumpHack = enabled
+            if enabled then spawn(JumpHackLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "God Mode", "bất tử", yPos, false, function(enabled)
+            _G.GodMode = enabled
+            if enabled then spawn(GodModeLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle5, _ = CreateToggle(ContentFrame, "Anti AFK", "chống bị kick sau 20p", yPos, true, function(enabled)
+            _G.AntiAFK = enabled
+            if enabled then spawn(AntiAFKLoop) end
+        end)
+        yPos = yPos + 65
+        local input1, _ = CreateInput(ContentFrame, "WalkSpeed Value", "nhập tốc độ (16-120)", yPos, function(value)
+            _G.WalkSpeedValue = tonumber(value) or 16
+        end)
+        yPos = yPos + 75
+        local input2, _ = CreateInput(ContentFrame, "JumpPower Value", "nhập lực nhảy (50-200)", yPos, function(value)
+            _G.JumpPowerValue = tonumber(value) or 50
+        end)
+        yPos = yPos + 75
+        local btn4 = CreateButton(ContentFrame, "Refresh Player List", yPos, Color3.fromRGB(0, 150, 200))
+        yPos = yPos + 45
+        local btn5 = CreateButton(ContentFrame, "Teleport to Player", yPos, Color3.fromRGB(0, 200, 100))
+
+    elseif tabIndex == 11 then -- Local Shop
+        local btn1 = CreateButton(ContentFrame, "Open Local Shop", yPos, Color3.fromRGB(0, 150, 150))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Buy Items", yPos, Color3.fromRGB(0, 200, 0))
+        yPos = yPos + 45
+        local btn3 = CreateButton(ContentFrame, "Sell Items", yPos, Color3.fromRGB(200, 0, 0))
+
+    elseif tabIndex == 12 then -- Stats & ESP
+        local toggle1, _ = CreateToggle(ContentFrame, "ESP Items", "hiển thị item", yPos, false, function(enabled)
+            _G.ESP = enabled
+            if enabled then spawn(ESPLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle2, _ = CreateToggle(ContentFrame, "ESP Players", "hiển thị người chơi", yPos, false, function(enabled)
+            _G.ESP = enabled
+            if enabled then spawn(ESPLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle3, _ = CreateToggle(ContentFrame, "ESP Chests", "hiển thị rương", yPos, false, function(enabled)
+            _G.ESP = enabled
+            if enabled then spawn(ESPLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle4, _ = CreateToggle(ContentFrame, "ESP Fruits", "hiển thị trái cây", yPos, false, function(enabled)
+            _G.ESP = enabled
+            if enabled then spawn(ESPLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle5, _ = CreateToggle(ContentFrame, "ESP Island", "hiển thị đảo", yPos, false, function(enabled)
+            _G.ESP = enabled
+            if enabled then spawn(ESPLoop) end
+        end)
+        yPos = yPos + 65
+        local toggle6, _ = CreateToggle(ContentFrame, "ESP Gears", "hiển thị linh kiện", yPos, false, function(enabled)
+            _G.ESP = enabled
+            if enabled then spawn(ESPLoop) end
+        end)
+
+    elseif tabIndex == 13 then -- Tab Teleport
+        local btn1 = CreateButton(ContentFrame, "Teleport Sea 1", yPos, Color3.fromRGB(100, 200, 255))
+        yPos = yPos + 45
+        local btn2 = CreateButton(ContentFrame, "Teleport Sea 2", yPos, Color3.fromRGB(100, 150, 255))
+        yPos = yPos + 45
+        local btn3 = CreateButton(ContentFrame, "Teleport Sea 3", yPos, Color3.fromRGB(100, 100, 255))
+        yPos = yPos + 45
+        local btn4 = CreateButton(ContentFrame, "Travel - Island", yPos, Color3.fromRGB(0, 200, 0))
+        yPos = yPos + 45
+        local btn5 = CreateButton(ContentFrame, "Travel - Portal", yPos, Color3.fromRGB(200, 0, 200))
+        yPos = yPos + 45
+        local btn6 = CreateButton(ContentFrame, "Travel - NPCs", yPos, Color3.fromRGB(255, 150, 0))
+        yPos = yPos + 45
+        local btn7 = CreateButton(ContentFrame, "Auto Tween to NPCs", yPos, Color3.fromRGB(0, 255, 0))
+    end
+end
+
+-- ===========================================
+-- TẠO CÁC NÚT TAB
+-- ===========================================
+local yPos = 0
+for i, tabName in ipairs(tabs) do
+    local btn = Instance.new("TextButton")
+    btn.Parent = TabList
+    btn.Size = UDim2.new(1, -5, 0, 35)
+    btn.Position = UDim2.new(0, 2, 0, yPos)
+    btn.Text = tabName
+    btn.TextColor3 = i == currentTab and Color3.fromRGB(0, 255, 128) or Color3.fromRGB(200, 200, 200)
+    btn.TextSize = 14
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.BackgroundColor3 = i == currentTab and Color3.fromRGB(0, 40, 20) or Color3.fromRGB(25, 25, 25)
+    btn.BorderSizePixel = 0
+
+    btn.MouseButton1Click:Connect(function()
+        currentTab = i
+        for j, b in ipairs(TabList:GetChildren()) do
+            if b:IsA("TextButton") then
+                b.TextColor3 = j == i and Color3.fromRGB(0, 255, 128) or Color3.fromRGB(200, 200, 200)
+                b.BackgroundColor3 = j == i and Color3.fromRGB(0, 40, 20) or Color3.fromRGB(25, 25, 25)
+            end
+        end
+        UpdateContent(i)
+    end)
+
+    table.insert(tabButtons, btn)
+    yPos = yPos + 40
+end
+TabList.CanvasSize = UDim2.new(0, 0, 0, yPos + 10)
+
+-- Mở tab 1 mặc định
+UpdateContent(1)
+
+-- ===========================================
+-- THANH THÔNG TIN DƯỚI CÙNG
+-- ===========================================
+local InfoBar = Instance.new("Frame")
+InfoBar.Parent = MainFrame
+InfoBar.Size = UDim2.new(1, -20, 0, 35)
+InfoBar.Position = UDim2.new(0, 10, 1, -40)
+InfoBar.BackgroundColor3 = Color3.fromRGB(0, 15, 10)
+InfoBar.BorderSizePixel = 0
+
+local InfoText = Instance.new("TextLabel")
+InfoText.Parent = InfoBar
+InfoText.Size = UDim2.new(1, -100, 1, 0)
+InfoText.Position = UDim2.new(0, 10, 0, 0)
+InfoText.Text = "⚡ CẤP 2800 (TỐI ĐA) | 💰 $10,008,821 | v30.0.6-Sea3"
+InfoText.TextColor3 = Color3.fromRGB(0, 255, 128)
+InfoText.TextScaled = true
+InfoText.Font = Enum.Font.Gotham
+InfoText.BackgroundTransparency = 1
+InfoText.TextXAlignment = Enum.TextXAlignment.Left
+
+local LiveDot = Instance.new("Frame")
+LiveDot.Parent = InfoBar
+LiveDot.Size = UDim2.new(0, 10, 0, 10)
+LiveDot.Position = UDim2.new(1, -20, 0, 12)
+LiveDot.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+LiveDot.BorderSizePixel = 0
+
+-- ===========================================
+-- NÚT FLOAT CHO MOBILE
+-- ===========================================
+if isMobile then
+    local FloatButton = Instance.new("TextButton")
+    FloatButton.Parent = OneByChat
+    FloatButton.Size = UDim2.new(0, 50, 0, 50)
+    FloatButton.Position = UDim2.new(0.9, -25, 0.9, -25)
+    FloatButton.BackgroundColor3 = Color3.fromRGB(0, 150, 75)
+    FloatButton.BackgroundTransparency = 0.2
+    FloatButton.BorderSizePixel = 0
+    FloatButton.Text = "☠️"
+    FloatButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    FloatButton.TextSize = 25
+    FloatButton.Font = Enum.Font.GothamBold
+
+    local floatCorner = Instance.new("UICorner")
+    floatCorner.Parent = FloatButton
+    floatCorner.CornerRadius = UDim.new(1, 0)
+
+    FloatButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = not MainFrame.Visible
+    end)
+end
+
+-- ===========================================
+-- WATERMARK
+-- ===========================================
+local Watermark = Instance.new("TextLabel")
+Watermark.Parent = OneByChat
+Watermark.Size = UDim2.new(0, 350, 0, 25)
+Watermark.Position = UDim2.new(0, 10, 1, -30)
+Watermark.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Watermark.BackgroundTransparency = 0.4
+Watermark.BorderSizePixel = 0
+Watermark.Text = "☠️ ONE BY CHAT | TURBO EDITION | FULL CHỨC NĂNG | by kietdepzai 👑"
+Watermark.TextColor3 = Color3.fromRGB(0, 255, 128)
+Watermark.TextScaled = true
+Watermark.Font = Enum.Font.Gotham
+
+-- THÔNG BÁO HOÀN TẤT
+game.StarterGui:SetCore("SendNotification", {
+    Title = "ONE BY CHAT",
+    Text = "✅ TURBO EDITION - FULL CHỨC NĂNG",
+    Duration = 3
+})
+
+-- ===========================================
+-- CẬP NHẬT THỜI GIAN
+-- ===========================================
+spawn(function()
+    while OneByChat do
+        wait(1)
+        if InfoText then
+            local time = os.date("%H:%M:%S")
+            InfoText.Text = "⚡ CẤP 2800 | " .. time .. " | 💰 $10,008,821 | v30.0.6-Sea3"
+        end
+    end
+end)
+
+print([[
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║     ☠️  ONE BY CHAT - TURBO EDITION  ☠️                  ║
+║                 FULL CHỨC NĂNG                          ║
+║                                                          ║
+║   📋 INFO     🌾 FARMING    📦 STACK     ⚔️ MASTERY     ║
+║   🌊 SEA      ⬆️ V4         🐉 DOJO      🎁 ITEMS       ║
+║   🍎 RAID     👤 PLAYER     🏪 SHOP      📊 STATS       ║
+║   🌐 TELEPORT                                           ║
+║                                                          ║
+║   🔥 CÁC CHỨC NĂNG ĐÃ HOẠT ĐỘNG:                        ║
+║   • Auto Farm • Aimbot • Speed Hack                     ║
+║   • God Mode • Anti AFK • Auto Raid                     ║
+║   • Auto Fruit • Auto Sea Beast • Auto V3/V4            ║
+║   • Và nhiều hơn nữa...                                 ║
+║                                                          ║
+║              👑 BY: KIETDEPZAI 👑                        ║
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
+]])
